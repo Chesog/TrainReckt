@@ -3,19 +3,22 @@ function love.load()
   
   screenWidht = 960
   screenHeight = 540
-  
+  love.window.setMode(screenWidht,screenHeight)
+    
 playerWidth = (love.graphics.getWidth() / 30 )
 playerHeight = ((love.graphics.getWidth() / 30) * 2)
 
 x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
-y =  ((love.graphics.getHeight() / 10) * 8) - (playerHeight / 2)
+y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
 
 width = playerWidth
 height = playerHeight
 
+  trainWidth = ((love.graphics.getWidth() / 10 ) * 1.2)
+  trainHeight = ((love.graphics.getHeight() / 10 ) * 3)
 
-  love.window.setMode(screenWidht,screenHeight)
-
+  trainPosX1 = ((love.graphics.getWidth() / 10 ) * 5) - (trainWidth / 2)
+  trainPosY1 = 0
 end
 
 --Update Function
@@ -23,6 +26,7 @@ function love.update(dt)
 print ("Player Position x : ",x)
 print ("Player Position y : ",y)
   playerMovement(dt)
+  trainMovement(dt)
 
 end
 
@@ -30,26 +34,27 @@ end
 function love.draw()
   love.graphics.rectangle("line",x,y,width,height)
   drawRails()
+  drawTrain()
 end
+
 
 function playerMovement(dt)
     if love.keyboard.isDown('s')
   then  x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
-        y =  ((love.graphics.getHeight() / 10) * 8) - (playerHeight / 2)
+        y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
     end
     
      if love.keyboard.isDown('a')
   then  x =  ((love.graphics.getWidth() / 10 ) * 2) - (playerWidth / 2)
-        y =  ((love.graphics.getHeight() / 10) * 8) - (playerHeight / 2)
+        y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
     end
     
      if love.keyboard.isDown('d')
   then  x =  ((love.graphics.getWidth() / 10 ) * 8) - (playerWidth / 2)
-        y =  ((love.graphics.getHeight() / 10) * 8) - (playerHeight / 2)
+        y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
     end
     
   end
-
 function drawRails()
   railWidth = ((love.graphics.getWidth() / 10 ) * 2)
   railHeight = love.graphics.getHeight()
@@ -102,4 +107,10 @@ function drawRails()
  
 
   
+end
+function drawTrain()  
+  love.graphics.rectangle("fill", trainPosX1,trainPosY1, trainWidth,trainHeight)
+end
+function trainMovement(dt)
+  trainPosY1 = trainPosY1 + 50 * dt
   end
