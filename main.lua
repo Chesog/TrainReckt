@@ -4,9 +4,11 @@ function love.load()
   screenWidht = 960
   screenHeight = 540
   love.window.setMode(screenWidht,screenHeight)
+  gameInPause = false;
     
 playerWidth = (love.graphics.getWidth() / 30 )
 playerHeight = ((love.graphics.getWidth() / 30) * 2)
+playerPositionValue = 2;
 
 x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
 y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
@@ -24,25 +26,25 @@ height = playerHeight
   
   train2 = {}
   train2.x = 0
-  train2.y = 0 - trainHeight
+  train2.y = 0 - trainHeight * 2
   
   train3 = {}
   train3.x = 0
-  train3.y = 0- trainHeight*2
+  train3.y = 0- trainHeight * 4
   
   train4 = {}
   train4.x = 0
-  train4.y = 0- trainHeight*3
+  train4.y = 0- trainHeight * 6
 end
 
 --Update Function
 function love.update(dt)
 --print ("Player Position x : ",x)
 --print ("Player Position y : ",y)
-  playerMovement(dt)
+  playerInput(dt)
   trainMovement(dt)
   OBtrain()
---  RandTrain()
+  RandTrain()
 end
 
 -- Draw Function
@@ -50,26 +52,56 @@ function love.draw()
   love.graphics.rectangle("line",x,y,width,height)
   drawRails()
   drawTrain()
+  drawPlayer(playerPositionValue)
 end
 
-function playerMovement(dt)
-    if love.keyboard.isDown('s')
-  then  x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
-        y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
-    end
+function playerInput(dt)
     
-     if love.keyboard.isDown('a')
-  then  x =  ((love.graphics.getWidth() / 10 ) * 2) - (playerWidth / 2)
-        y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
-    end
-    
-     if love.keyboard.isDown('d')
-  then  x =  ((love.graphics.getWidth() / 10 ) * 8) - (playerWidth / 2)
-        y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
-    end
-    
+     if love.keyboard.isDown('a','left')
+     then if playerPositionValue == 3
+          then playerPositionValue = 2
+            return
+        else 
+          playerPositionValue = 1
+          end
+      end
+     
+     if love.keyboard.isDown('d','right')
+     then if playerPositionValue == 1
+          then playerPositionValue = 2
+             return
+        else 
+          playerPositionValue = 3
+          end
+      end
+     
+     if love.keyboard.isDown('p')
+     then if gameInPause == false
+            then gameInPause = true
+          else gameInPause = false
+          end
+    print("player Position Value : ",playerPositionValue)
+    if gameInPause == true
+    then print("Game in Pause true")
+    else print ("Game in pause False")
+      end
   end
-  
+end
+
+  function drawPlayer(playerPositionValue)
+    
+    if  playerPositionValue == 1
+      then  x =  ((love.graphics.getWidth() / 10 ) * 2) - (playerWidth / 2)
+            y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+    elseif  playerPositionValue == 2
+      then x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
+            y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+    else
+            x =  ((love.graphics.getWidth() / 10 ) * 8) - (playerWidth / 2)
+            y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+      end
+      
+   end 
 function drawRails()
   railWidth = ((love.graphics.getWidth() / 10 ) * 2)
   railHeight = love.graphics.getHeight()
@@ -167,7 +199,7 @@ end
 function RandTrain()
   rand = 0
   --
-if  train1.y < 0 then
+if  train1.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
   print(rand)
   
@@ -177,10 +209,10 @@ if  train1.y < 0 then
   train1.x = ((love.graphics.getWidth() / 10 ) * 5) - trainWidth/2
   else 
   train1.x =  ((love.graphics.getWidth() / 10 ) * 8) - trainWidth/2
-  end  
+  end 
 end
 --
-if  train2.y < 0 then
+if  train2.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
   print(rand)
   
@@ -194,7 +226,7 @@ if  train2.y < 0 then
 
 end
 --
-if  train3.y < 0 then
+if  train3.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
   print(rand)
   
@@ -203,11 +235,11 @@ if  train3.y < 0 then
   elseif rand == 2 then
   train3.x = ((love.graphics.getWidth() / 10 ) * 5) - trainWidth/2
   else 
-  train.x = ((love.graphics.getWidth() / 10 ) * 8) - trainWidth/2
+  train3.x = ((love.graphics.getWidth() / 10 ) * 8) - trainWidth/2
   end
 end
 --
-if  train4.y < 0 then
+if  train4.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
   print(rand)
   
@@ -219,5 +251,4 @@ if  train4.y < 0 then
   train4.x = ((love.graphics.getWidth() / 10 ) * 8) - trainWidth/2
   end
  end
-
-  end
+ end
