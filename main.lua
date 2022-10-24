@@ -4,13 +4,17 @@ function love.load()
   screenWidht = 960
   screenHeight = 540
   love.window.setMode(screenWidht,screenHeight)
-  gameInPause = false;
-    
+  gameInPause = false
+  playerTop = false
+  
   trainR = love.graphics.newImage("res/Train_Model_R.png")
   trainG = love.graphics.newImage("res/Train_Model_G.png")
   trainB = love.graphics.newImage("res/Train_Model_B.png")
   trainY = love.graphics.newImage("res/Train_Model_Y.png")
   playerModel = love.graphics.newImage("res/player.png")
+  
+hitSound = love.audio.newSource("res/hitSound.wav", "static")
+PlayMusic = love.audio.newSource("res/PlayMusic.wav", "stream")
   
 playerWidth = (love.graphics.getWidth() / 30 )
 playerHeight = ((love.graphics.getWidth() / 30) * 2)
@@ -47,13 +51,17 @@ height = playerHeight
   
   resetTimerValue = 3
   gameplayTimer = resetTimerValue
+  love.audio.setVolume( 0.5 )
 end
 
 --Update Function
 function love.update(dt)
   
-   playerInput(dt)
-   
+  	if not PlayMusic:isPlaying() then
+		love.audio.play( PlayMusic )
+	end
+  
+   playerInput(dt)  
   if gameInPause == false 
   then  trainMovement(dt)
         OBtrain()
@@ -73,7 +81,6 @@ end
 
 -- Draw Function
 function love.draw()
-  love.graphics.rectangle("line",x,y,width,height)
   drawRails()
   drawTrain()
   drawPlayer(playerPositionValue)
@@ -113,9 +120,18 @@ function love.keypressed(key)
            playerPositionValue = 3
         end      
   end
+end
+
+if gameInPause == true
+then
+  if key == 'r'
+  then
+    resetGame()
+  end
   end
   
-
+if playerLives > 0
+then
   if key == 'escape'
   then if gameInPause == false
      then gameInPause = true
@@ -123,22 +139,37 @@ function love.keypressed(key)
     gameInPause = false
       end
   end
+  end
   
-  
+
 end
 
 function drawPlayer(playerPositionValue)
-    
+
     if  playerPositionValue == 1
-      then  x =  ((love.graphics.getWidth() / 10 ) * 2) - (playerWidth / 2)
-            y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+    then  x =  ((love.graphics.getWidth() / 10 ) * 2) - (playerWidth / 2)
     elseif  playerPositionValue == 2
-      then x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
-            y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+    then x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
     else
-            x =  ((love.graphics.getWidth() / 10 ) * 8) - (playerWidth / 2)
-            y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
-      end
+        x =  ((love.graphics.getWidth() / 10 ) * 8) - (playerWidth / 2)
+    end
+    
+    if  y ==  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2) +10
+    then playerTop = true
+    end
+    
+    if  y == ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+    then playerTop = false
+  end
+  
+  if playerTop == false
+  then
+    y = y+1
+  elseif playerTop == true
+  then
+    y = y-1
+    end
+
       playerOfsetX = 15
       playerOfsetY = 0
       playerScaleX = 1
@@ -317,6 +348,7 @@ function CheckColisionPlayerTrain()
   train3.y = 0- trainHeight * 5
   
   train4.y = 0- trainHeight * 7
+  love.audio.play( hitSound )
       end
   end
   
@@ -335,6 +367,7 @@ function CheckColisionPlayerTrain()
   train3.y = 0- trainHeight * 5
   
   train4.y = 0- trainHeight * 7
+  love.audio.play( hitSound )
       end
   end
   
@@ -353,6 +386,7 @@ function CheckColisionPlayerTrain()
   train3.y = 0- trainHeight * 5
   
   train4.y = 0- trainHeight * 7
+  love.audio.play( hitSound )
       end
   end
   
@@ -371,9 +405,10 @@ function CheckColisionPlayerTrain()
   train3.y = 0- trainHeight * 5
   
   train4.y = 0- trainHeight * 7
+  love.audio.play( hitSound )
       end
     end
-    print(playerLives)
+    --print(playerLives)
 end
 
 function CheckColisions()
@@ -381,11 +416,14 @@ function CheckColisions()
 end
 
 function CheckTimer(dt)
+  if gameInPause == false
+  then
   gameplayTimer = gameplayTimer - 1 * dt
   if  gameplayTimer <= 0
   then PlayerScore = PlayerScore + 1
     gameplayTimer = resetTimerValue
-    end
+  end
+  end
 end
 function HUB()
       text1posX = (love.graphics.getWidth() / 30 )
@@ -421,3 +459,42 @@ function HUB()
     else
     end
   end
+  
+function resetGame()
+    playerWidth = (love.graphics.getWidth() / 30 )
+playerHeight = ((love.graphics.getWidth() / 30) * 2)
+playerPositionValue = 2
+
+playerLives = 3
+PlayerScore = 0
+
+x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
+y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+
+width = playerWidth
+height = playerHeight
+  
+  trainWidth = ((love.graphics.getWidth() / 10 ) * 1.2)
+  trainHeight = ((love.graphics.getHeight() / 10 ) * 3)
+
+  train1 = {}
+  train1.x = 0
+  train1.y = 0 - trainHeight
+  train1.x =  ((love.graphics.getWidth() / 10 ) * 2) - trainWidth/2
+  
+  train2 = {}
+  train2.x = 0
+  train2.y = 0 - trainHeight * 3
+  
+  train3 = {}
+  train3.x = 0
+  train3.y = 0- trainHeight * 5
+  
+  train4 = {}
+  train4.x = 0
+  train4.y = 0- trainHeight * 7
+  
+  resetTimerValue = 3
+  gameplayTimer = resetTimerValue
+  love.audio.setVolume( 0.5 )
+    end
