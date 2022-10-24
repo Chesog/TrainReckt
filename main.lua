@@ -6,6 +6,11 @@ function love.load()
   love.window.setMode(screenWidht,screenHeight)
   gameInPause = false;
     
+  trainR = love.graphics.newImage("res/Train_Model_R.png")
+  trainG = love.graphics.newImage("res/Train_Model_G.png")
+  trainB = love.graphics.newImage("res/Train_Model_B.png")
+  trainY = love.graphics.newImage("res/Train_Model_Y.png")
+  
 playerWidth = (love.graphics.getWidth() / 30 )
 playerHeight = ((love.graphics.getWidth() / 30) * 2)
 playerPositionValue = 2;
@@ -39,12 +44,15 @@ end
 
 --Update Function
 function love.update(dt)
---print ("Player Position x : ",x)
---print ("Player Position y : ",y)
-  playerInput(dt)
-  trainMovement(dt)
-  OBtrain()
-  RandTrain()
+  
+   playerInput(dt)
+   
+  if gameInPause == false 
+  then  trainMovement(dt)
+        OBtrain()
+        RandTrain()
+  end
+
 end
 
 -- Draw Function
@@ -53,42 +61,54 @@ function love.draw()
   drawRails()
   drawTrain()
   drawPlayer(playerPositionValue)
+  if  gameInPause == true
+  then
+    pauseWidht = 500
+    pauseHeight = 300
+    pauseX = (love.graphics.getWidth() / 2) - (pauseWidht / 2)
+    pauseY = (love.graphics.getHeight() / 2) - (pauseHeight / 2)
+
+    love.graphics.rectangle("fill",pauseX,pauseY,pauseWidht,pauseHeight)
+  end
 end
 
 function playerInput(dt)
-    
-     if love.keyboard.isDown('a','left')
-     then if playerPositionValue == 3
-          then playerPositionValue = 2
-            return
-        else 
-          playerPositionValue = 1
-          end
+    love.keypressed(key)
+end
+
+function love.keypressed(key)
+  
+  if  gameInPause == false
+  then
+      if  key == 'a' or key == 'left'
+  then if playerPositionValue == 3
+        then playerPositionValue = 2
+        else
+           playerPositionValue = 1
+        end
       end
-     
-     if love.keyboard.isDown('d','right')
-     then if playerPositionValue == 1
-          then playerPositionValue = 2
-             return
-        else 
-          playerPositionValue = 3
-          end
+      
+  if  key == 'd' or key == 'right'
+      then if playerPositionValue == 1
+      then playerPositionValue = 2
+        else
+           playerPositionValue = 3
+        end
       end
-     
-     if love.keyboard.isDown('p')
-     then if gameInPause == false
-            then gameInPause = true
-          else gameInPause = false
-          end
-    print("player Position Value : ",playerPositionValue)
-    if gameInPause == true
-    then print("Game in Pause true")
-    else print ("Game in pause False")
+      
+  end
+  
+
+  if key == 'escape'
+  then if gameInPause == false
+     then gameInPause = true
+      else
+    gameInPause = false
       end
   end
 end
 
-  function drawPlayer(playerPositionValue)
+function drawPlayer(playerPositionValue)
     
     if  playerPositionValue == 1
       then  x =  ((love.graphics.getWidth() / 10 ) * 2) - (playerWidth / 2)
@@ -157,11 +177,20 @@ function drawRails()
 end
 
 function drawTrain()  
+trainOfsetX = 35
+trainOfsetY = 10
+trainScaleX = 1
+trainScaleY = 1
+trainRotation = 0
 
   love.graphics.rectangle("fill", train1.x,train1.y, trainWidth, trainHeight)
+  love.graphics.draw(trainR,train1.x,train1.y,trainRotation,trainScaleX,trainScaleX,trainOfsetX,trainOfsetY)
   love.graphics.rectangle("fill", train2.x,train2.y, trainWidth, trainHeight)
+  love.graphics.draw(trainG,train2.x,train2.y,trainRotation,trainScaleX,trainScaleX,trainOfsetX,trainOfsetY)
   love.graphics.rectangle("fill", train3.x,train3.y, trainWidth, trainHeight)
+  love.graphics.draw(trainB,train3.x,train3.y,trainRotation,trainScaleX,trainScaleX,trainOfsetX,trainOfsetY)
   love.graphics.rectangle("fill", train4.x,train4.y, trainWidth, trainHeight)
+  love.graphics.draw(trainY,train4.x,train4.y,trainRotation,trainScaleX,trainScaleY,trainOfsetX,trainOfsetY)
 
 end
 
