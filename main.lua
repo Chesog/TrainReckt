@@ -1,6 +1,6 @@
 --Start function
 function love.load()
-  
+
   screenWidht = 960
   screenHeight = 540
   love.window.setMode(screenWidht,screenHeight)
@@ -13,10 +13,12 @@ function love.load()
   
 playerWidth = (love.graphics.getWidth() / 30 )
 playerHeight = ((love.graphics.getWidth() / 30) * 2)
-playerPositionValue = 2;
+playerPositionValue = 2
 
-x =  ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
-y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+playerLives = 3
+
+x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
+y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
 
 width = playerWidth
 height = playerHeight
@@ -26,7 +28,7 @@ height = playerHeight
 
   train1 = {}
   train1.x = 0
-  train1.y = 0
+  train1.y = 0 - trainHeight
   train1.x =  ((love.graphics.getWidth() / 10 ) * 2) - trainWidth/2
   
   train2 = {}
@@ -53,6 +55,13 @@ function love.update(dt)
         RandTrain()
   end
 
+  CheckColisions()
+  playerInput(dt)
+
+if playerLives == 0 then
+gameInPause = true
+end
+
 end
 
 -- Draw Function
@@ -71,6 +80,7 @@ function love.draw()
     love.graphics.rectangle("fill",pauseX,pauseY,pauseWidht,pauseHeight)
   end
 end
+--
 
 function playerInput(dt)
     love.keypressed(key)
@@ -93,9 +103,8 @@ function love.keypressed(key)
       then playerPositionValue = 2
         else
            playerPositionValue = 3
-        end
-      end
-      
+        end      
+  end
   end
   
 
@@ -230,7 +239,6 @@ function RandTrain()
   --
 if  train1.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
-  print(rand)
   
   if  rand == 1 then
   train1.x = ((love.graphics.getWidth() / 10 ) * 2) - trainWidth/2
@@ -243,7 +251,6 @@ end
 --
 if  train2.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
-  print(rand)
   
   if  rand == 1 then
   train2.x = ((love.graphics.getWidth() / 10 ) * 2) - trainWidth/2
@@ -257,7 +264,6 @@ end
 --
 if  train3.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
-  print(rand)
   
   if  rand == 1 then
   train3.x = ((love.graphics.getWidth() / 10 ) * 2) - trainWidth/2
@@ -270,7 +276,6 @@ end
 --
 if  train4.y < 0 - trainHeight + 1 then
   rand = love.math.random(1,3)
-  print(rand)
   
   if  rand == 1 then
   train4.x = ((love.graphics.getWidth() / 10 ) * 2) - trainWidth/2
@@ -280,4 +285,83 @@ if  train4.y < 0 - trainHeight + 1 then
   train4.x = ((love.graphics.getWidth() / 10 ) * 8) - trainWidth/2
   end
  end
- end
+end
+
+function CheckColisionPlayerTrain()
+    if (train1.x + trainWidth/2) - playerWidth/2 == x 
+  then
+    -- print("tren 1 igual al jugador")
+    if train1.y + trainHeight > y
+    then
+  playerLives = playerLives - 1
+  x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
+  y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2) 
+  train1.y = 0 - trainHeight
+
+  train2.y = 0 - trainHeight * 2
+  
+  train3.y = 0- trainHeight * 4
+  
+  train4.y = 0- trainHeight * 6
+      end
+  end
+  
+    if (train2.x + trainWidth/2) - playerWidth/2 == x 
+  then
+    --print("tren 2 igual al jugador")
+        if train2.y + trainHeight > y
+    then
+  playerLives = playerLives - 1
+  x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
+  y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+  train1.y = 0 - trainHeight
+
+  train2.y = 0 - trainHeight * 2
+  
+  train3.y = 0- trainHeight * 4
+  
+  train4.y = 0- trainHeight * 6
+      end
+  end
+  
+    if (train3.x + trainWidth/2) - playerWidth/2 == x 
+  then
+    -- print("tren 3 igual al jugador")
+        if train3.y + trainHeight > y
+    then
+  playerLives = playerLives - 1
+  x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
+  y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+  train1.y = 0 - trainHeight
+
+  train2.y = 0 - trainHeight * 2
+  
+  train3.y = 0- trainHeight * 4
+  
+  train4.y = 0- trainHeight * 6
+      end
+  end
+  
+    if (train4.x + trainWidth/2) - playerWidth/2 == x 
+  then
+     --print("tren 4 igual al jugador")
+        if train4.y + trainHeight > y
+    then
+  playerLives = playerLives - 1
+  x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
+  y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
+  train1.y = 0 - trainHeight
+
+  train2.y = 0 - trainHeight * 2
+  
+  train3.y = 0- trainHeight * 4
+  
+  train4.y = 0- trainHeight * 6
+      end
+    end
+    print(playerLives)
+end
+
+function CheckColisions()
+  CheckColisionPlayerTrain()
+  end
