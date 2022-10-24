@@ -16,6 +16,7 @@ playerHeight = ((love.graphics.getWidth() / 30) * 2)
 playerPositionValue = 2
 
 playerLives = 3
+PlayerScore = 0
 
 x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
 y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
@@ -33,15 +34,18 @@ height = playerHeight
   
   train2 = {}
   train2.x = 0
-  train2.y = 0 - trainHeight * 2
+  train2.y = 0 - trainHeight * 3
   
   train3 = {}
   train3.x = 0
-  train3.y = 0- trainHeight * 4
+  train3.y = 0- trainHeight * 5
   
   train4 = {}
   train4.x = 0
-  train4.y = 0- trainHeight * 6
+  train4.y = 0- trainHeight * 7
+  
+  resetTimerValue = 3
+  gameplayTimer = resetTimerValue
 end
 
 --Update Function
@@ -62,6 +66,8 @@ if playerLives == 0 then
 gameInPause = true
 end
 
+CheckTimer(dt)
+
 end
 
 -- Draw Function
@@ -79,6 +85,7 @@ function love.draw()
 
     love.graphics.rectangle("fill",pauseX,pauseY,pauseWidht,pauseHeight)
   end
+  HUB()
 end
 --
 
@@ -192,19 +199,19 @@ trainScaleX = 1
 trainScaleY = 1
 trainRotation = 0
 
-  love.graphics.rectangle("fill", train1.x,train1.y, trainWidth, trainHeight)
+ -- love.graphics.rectangle("fill", train1.x,train1.y, trainWidth, trainHeight)
   love.graphics.draw(trainR,train1.x,train1.y,trainRotation,trainScaleX,trainScaleX,trainOfsetX,trainOfsetY)
-  love.graphics.rectangle("fill", train2.x,train2.y, trainWidth, trainHeight)
+ -- love.graphics.rectangle("fill", train2.x,train2.y, trainWidth, trainHeight)
   love.graphics.draw(trainG,train2.x,train2.y,trainRotation,trainScaleX,trainScaleX,trainOfsetX,trainOfsetY)
-  love.graphics.rectangle("fill", train3.x,train3.y, trainWidth, trainHeight)
+ -- love.graphics.rectangle("fill", train3.x,train3.y, trainWidth, trainHeight)
   love.graphics.draw(trainB,train3.x,train3.y,trainRotation,trainScaleX,trainScaleX,trainOfsetX,trainOfsetY)
-  love.graphics.rectangle("fill", train4.x,train4.y, trainWidth, trainHeight)
+ -- love.graphics.rectangle("fill", train4.x,train4.y, trainWidth, trainHeight)
   love.graphics.draw(trainY,train4.x,train4.y,trainRotation,trainScaleX,trainScaleY,trainOfsetX,trainOfsetY)
 
 end
 
 function trainMovement(dt)
-  speed = 100
+  speed = 400
   
   train1.y = train1.y + speed * dt  
   train2.y = train2.y + speed * dt  
@@ -216,28 +223,27 @@ end
 function OBtrain()
     
   if train1.y > love.graphics.getHeight()then
-    train1.y = (0 - trainHeight)
+    train1.y = 0- trainHeight * 5
   end 
   
   if train2.y > love.graphics.getHeight()then
-    train2.y = (0 - trainHeight)
+    train2.y = 0- trainHeight * 5
   end 
   
   if train3.y > love.graphics.getHeight()then
-    train3.y = (0 - trainHeight)
+    train3.y = 0- trainHeight * 5
   end 
 
   if train4.y > love.graphics.getHeight()then
-    train4.y = (0 - trainHeight)
+    train4.y = 0- trainHeight * 5
   end 
-  
 
 end
 
 function RandTrain()
   rand = 0
   --
-if  train1.y < 0 - trainHeight + 1 then
+if  train1.y <= 0 - (trainHeight +50) then
   rand = love.math.random(1,3)
   
   if  rand == 1 then
@@ -249,7 +255,7 @@ if  train1.y < 0 - trainHeight + 1 then
   end 
 end
 --
-if  train2.y < 0 - trainHeight + 1 then
+if  train2.y <= 0 - (trainHeight + 50)then
   rand = love.math.random(1,3)
   
   if  rand == 1 then
@@ -262,7 +268,7 @@ if  train2.y < 0 - trainHeight + 1 then
 
 end
 --
-if  train3.y < 0 - trainHeight + 1 then
+if  train3.y <= 0 - (trainHeight +50) then
   rand = love.math.random(1,3)
   
   if  rand == 1 then
@@ -274,7 +280,7 @@ if  train3.y < 0 - trainHeight + 1 then
   end
 end
 --
-if  train4.y < 0 - trainHeight + 1 then
+if  train4.y <= 0 - (trainHeight +50) then
   rand = love.math.random(1,3)
   
   if  rand == 1 then
@@ -298,11 +304,11 @@ function CheckColisionPlayerTrain()
   y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2) 
   train1.y = 0 - trainHeight
 
-  train2.y = 0 - trainHeight * 2
+  train2.y = 0 - trainHeight * 3
   
-  train3.y = 0- trainHeight * 4
+  train3.y = 0- trainHeight * 5
   
-  train4.y = 0- trainHeight * 6
+  train4.y = 0- trainHeight * 7
       end
   end
   
@@ -316,11 +322,11 @@ function CheckColisionPlayerTrain()
   y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
   train1.y = 0 - trainHeight
 
-  train2.y = 0 - trainHeight * 2
+  train2.y = 0 - trainHeight * 3
   
-  train3.y = 0- trainHeight * 4
+  train3.y = 0- trainHeight * 5
   
-  train4.y = 0- trainHeight * 6
+  train4.y = 0- trainHeight * 7
       end
   end
   
@@ -334,11 +340,11 @@ function CheckColisionPlayerTrain()
   y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
   train1.y = 0 - trainHeight
 
-  train2.y = 0 - trainHeight * 2
+  train2.y = 0 - trainHeight * 3
   
-  train3.y = 0- trainHeight * 4
+  train3.y = 0- trainHeight * 5
   
-  train4.y = 0- trainHeight * 6
+  train4.y = 0- trainHeight * 7
       end
   end
   
@@ -352,11 +358,11 @@ function CheckColisionPlayerTrain()
   y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
   train1.y = 0 - trainHeight
 
-  train2.y = 0 - trainHeight * 2
+  train2.y = 0 - trainHeight * 3
   
-  train3.y = 0- trainHeight * 4
+  train3.y = 0- trainHeight * 5
   
-  train4.y = 0- trainHeight * 6
+  train4.y = 0- trainHeight * 7
       end
     end
     print(playerLives)
@@ -364,4 +370,21 @@ end
 
 function CheckColisions()
   CheckColisionPlayerTrain()
+end
+
+function CheckTimer(dt)
+  gameplayTimer = gameplayTimer - 1 * dt
+  if  gameplayTimer <= 0
+  then PlayerScore = PlayerScore + 1
+    gameplayTimer = resetTimerValue
+    end
+end
+function HUB()
+  text1posX = (love.graphics.getWidth() / 30 )
+      text1posY = (love.graphics.getHeight() / 30 )
+      love.graphics.print("Traveled KM : ",text1posX,text1posY,0 ,2 ,2)
+
+      text2posX = text1posX * 6.5
+      text2posY = text1posY
+      love.graphics.print(PlayerScore,text2posX,text2posY, 0, 2 ,2)
   end
