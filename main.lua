@@ -10,6 +10,7 @@ function love.load()
   trainG = love.graphics.newImage("res/Train_Model_G.png")
   trainB = love.graphics.newImage("res/Train_Model_B.png")
   trainY = love.graphics.newImage("res/Train_Model_Y.png")
+  playerModel = love.graphics.newImage("res/player.png")
   
 playerWidth = (love.graphics.getWidth() / 30 )
 playerHeight = ((love.graphics.getWidth() / 30) * 2)
@@ -122,6 +123,8 @@ function love.keypressed(key)
     gameInPause = false
       end
   end
+  
+  
 end
 
 function drawPlayer(playerPositionValue)
@@ -136,7 +139,12 @@ function drawPlayer(playerPositionValue)
             x =  ((love.graphics.getWidth() / 10 ) * 8) - (playerWidth / 2)
             y =  ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
       end
-      
+      playerOfsetX = 15
+      playerOfsetY = 0
+      playerScaleX = 1
+      playerScaleY = 1
+      playerRotation = 0
+      love.graphics.draw(playerModel,x,y,playerRotation,playerScaleY,playerScaleY,playerOfsetX,playerOfsetY)
    end 
 function drawRails()
   railWidth = ((love.graphics.getWidth() / 10 ) * 2)
@@ -380,11 +388,36 @@ function CheckTimer(dt)
     end
 end
 function HUB()
-  text1posX = (love.graphics.getWidth() / 30 )
+      text1posX = (love.graphics.getWidth() / 30 )
       text1posY = (love.graphics.getHeight() / 30 )
       love.graphics.print("Traveled KM : ",text1posX,text1posY,0 ,2 ,2)
 
       text2posX = text1posX * 6.5
       text2posY = text1posY
       love.graphics.print(PlayerScore,text2posX,text2posY, 0, 2 ,2)
+      
+      lives1X = love.graphics.getWidth() - (love.graphics.getWidth() / 20)
+      lives2X = lives1X - (love.graphics.getWidth() / 20)
+      lives3X = lives2X - (love.graphics.getWidth() / 20)
+      livesY = (love.graphics.getHeight() / 30 )
+      livesOfsetX = 15
+      livesOfsetY = 0
+      livesScaleX = 1
+      livesScaleY = 1
+      livesRotation = 0
+      
+      if playerLives == 3
+      then
+      love.graphics.draw(playerModel,lives1X,livesY,livesRotation,livesScaleX,livesScaleY,livesOfsetX,livesOfsetY)
+      love.graphics.draw(playerModel,lives2X,livesY,livesRotation,livesScaleX,livesScaleY,livesOfsetX,livesOfsetY)
+      love.graphics.draw(playerModel,lives3X,livesY,livesRotation,livesScaleX,livesScaleY,livesOfsetX,livesOfsetY)
+    elseif playerLives == 2
+      then
+      love.graphics.draw(playerModel,lives1X,livesY,livesRotation,livesScaleX,livesScaleY,livesOfsetX,livesOfsetY)
+      love.graphics.draw(playerModel,lives2X,livesY,livesRotation,livesScaleX,livesScaleY,livesOfsetX,livesOfsetY)
+    elseif playerLives == 1
+    then
+      love.graphics.draw(playerModel,lives1X,livesY,livesRotation,livesScaleX,livesScaleY,livesOfsetX,livesOfsetY)
+    else
+    end
   end
