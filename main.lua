@@ -4,24 +4,33 @@ function love.load()
   screenWidht = 960
   screenHeight = 540
   love.window.setMode(screenWidht,screenHeight)
-  gameInPause = false
+  gameInPause = true
+  startgame = true
   playerTop = false
   
   trainR = love.graphics.newImage("res/Train_Model_R.png")
   trainG = love.graphics.newImage("res/Train_Model_G.png")
   trainB = love.graphics.newImage("res/Train_Model_B.png")
   trainY = love.graphics.newImage("res/Train_Model_Y.png")
+  
+  grass = love.graphics.newImage("res/Grass.png")
+  rail = love.graphics.newImage("res/Rails.png")
+  
+  playB = love.graphics.newImage("res/Play_Button.png")
+  resetB = love.graphics.newImage("res/Resset_Button.png")
+  exitB = love.graphics.newImage("res/Exit_Button.png")
+  
   playerModel = love.graphics.newImage("res/player.png")
   
-hitSound = love.audio.newSource("res/hitSound.wav", "static")
-PlayMusic = love.audio.newSource("res/PlayMusic.wav", "stream")
+  hitSound = love.audio.newSource("res/hitSound.wav", "static")
+  PlayMusic = love.audio.newSource("res/PlayMusic.wav", "stream")
   
-playerWidth = (love.graphics.getWidth() / 30 )
-playerHeight = ((love.graphics.getWidth() / 30) * 2)
-playerPositionValue = 2
+  playerWidth = (love.graphics.getWidth() / 30 )
+  playerHeight = ((love.graphics.getWidth() / 30) * 2)
+  playerPositionValue = 2
 
-playerLives = 3
-PlayerScore = 0
+  playerLives = 3
+  PlayerScore = 0
 
 x = ((love.graphics.getWidth() / 10 ) * 5) - (playerWidth / 2)
 y = ((love.graphics.getHeight() / 10) * 9) - (playerHeight / 2)
@@ -56,44 +65,12 @@ end
 
 --Update Function
 function love.update(dt)
-  
-  	if not PlayMusic:isPlaying() then
-		love.audio.play( PlayMusic )
-	end
-  
-   playerInput(dt)  
-  if gameInPause == false 
-  then  trainMovement(dt)
-        OBtrain()
-        RandTrain()
-  end
-
-  CheckColisions()
-  playerInput(dt)
-
-if playerLives == 0 then
-gameInPause = true
-end
-
-CheckTimer(dt)
-
+gameplayUpdate(dt)
 end
 
 -- Draw Function
 function love.draw()
-  drawRails()
-  drawTrain()
-  drawPlayer(playerPositionValue)
-  if  gameInPause == true
-  then
-    pauseWidht = 500
-    pauseHeight = 300
-    pauseX = (love.graphics.getWidth() / 2) - (pauseWidht / 2)
-    pauseY = (love.graphics.getHeight() / 2) - (pauseHeight / 2)
-
-    love.graphics.rectangle("fill",pauseX,pauseY,pauseWidht,pauseHeight)
-  end
-  HUB()
+gameplayDraw()
 end
 --
 
@@ -102,6 +79,12 @@ function playerInput(dt)
 end
 
 function love.keypressed(key)
+  
+  if key == 's'
+  then
+    startgame = false
+    gameInPause = false
+  end
   
   if  gameInPause == false
   then
@@ -127,12 +110,19 @@ then
   if key == 'r'
   then
     resetGame()
-  end
+    gameInPause = false
   end
   
+    if key == 'e'
+  then
+    love.event.quit()
+  end
+  
+end
+
 if playerLives > 0
 then
-  if key == 'escape'
+  if key == 'c'
   then if gameInPause == false
      then gameInPause = true
       else
@@ -181,53 +171,41 @@ function drawRails()
   railWidth = ((love.graphics.getWidth() / 10 ) * 2)
   railHeight = love.graphics.getHeight()
   
-  -- Primer Rail (Centro 1)
-  rail1RPosX1 = ((love.graphics.getWidth() / 10 ) * 5) + (railWidth / 2)
-  rail1RPosX2 = ((love.graphics.getWidth() / 10 ) * 5) + (railWidth / 2)
-  rail1RPosY1 = 0
-  rail1RPosY2 = railHeight
+  railOfsetX = 0
+  railOfsetY = 0
+  railScaleX = 0.1
+  railScaleY = 0.1
+  railRotation = 0
   
-  love.graphics.line(rail1RPosX1,rail1RPosY1,rail1RPosX2,rail1RPosY2)
+  grassOfsetX = 0
+  grassOfsetY = 0
+  grassScaleX = 5
+  grassScaleY = 5
+  grassRotation = 0
+  love.graphics.draw(grass,0,0,grassRotation,grassScaleY,grassScaleY,grassOfsetX,grassOfsetY)
   
-  rail1LPosX1 = ((love.graphics.getWidth() / 10 ) * 5) - (railWidth / 2)
-  rail1LPosX2 = ((love.graphics.getWidth() / 10 ) * 5) - (railWidth / 2)
-  rail1LPosY1 = 0
-  rail1LPosY2 = railHeight
-  
-  love.graphics.line(rail1LPosX1,rail1LPosY1,rail1LPosX2,rail1LPosY2)
+separacion = 115
+      
+  --Primer Rail (Centro 1)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 5) - (trainWidth / 2), 0, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 5) - (trainWidth / 2), separacion*1, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 5) - (trainWidth / 2), separacion*2, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 5) - (trainWidth / 2), separacion*3, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 5) - (trainWidth / 2), separacion*4, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
 
--- Segundo Rail (izquierda 2)
-  rail2RPosX1 = ((love.graphics.getWidth() / 10 ) * 2) + (railWidth / 2)
-  rail2RPosX2 = ((love.graphics.getWidth() / 10 ) * 2) + (railWidth / 2)
-  rail2RPosY1 = 0
-  rail2RPosY2 = railHeight
+  --Segundo Rail (izquierda 2)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 2) - (trainWidth / 2), 0, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 2) - (trainWidth / 2), separacion*1, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 2) - (trainWidth / 2), separacion*2, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 2) - (trainWidth / 2), separacion*3, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 2) - (trainWidth / 2), separacion*4, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
   
-  love.graphics.line(rail2RPosX1,rail2RPosY1,rail2RPosX2,rail2RPosY2)
-  
-  rail2LPosX1 = ((love.graphics.getWidth() / 10 ) * 2) - (railWidth / 2)
-  rail2LPosX2 = ((love.graphics.getWidth() / 10 ) * 2) - (railWidth / 2)
-  rail2LPosY1 = 0
-  rail2LPosY2 = railHeight
-  
-  love.graphics.line(rail2LPosX1,rail2LPosY1,rail2LPosX2,rail2LPosY2)
-  
-  -- Tercer Rail (Derecha 3)
-  
-  rail3RPosX1 = ((love.graphics.getWidth() / 10 ) * 8) + (railWidth / 2)
-  rail3RPosX2 = ((love.graphics.getWidth() / 10 ) * 8) + (railWidth / 2)
-  rail3RPosY1 = 0
-  rail3RPosY2 = railHeight
-  
-  love.graphics.line(rail3RPosX1,rail3RPosY1,rail3RPosX2,rail3RPosY2)
-  
-  rail3LPosX1 = ((love.graphics.getWidth() / 10 ) * 8) - (railWidth / 2)
-  rail3LPosX2 = ((love.graphics.getWidth() / 10 ) * 8) - (railWidth / 2)
-  rail3LPosY1 = 0
-  rail3LPosY2 = railHeight
-
-  love.graphics.line(rail3LPosX1,rail3LPosY1,rail3LPosX2,rail3LPosY2)
- 
-
+  -- ercer Rail (Derecha 3)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 8) - (trainWidth / 2), 0, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 8) - (trainWidth / 2), separacion*1, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 8) - (trainWidth / 2), separacion*2, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 8) - (trainWidth / 2), separacion*3, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
+  love.graphics.draw(rail, ((love.graphics.getWidth() / 10 ) * 8) - (trainWidth / 2), separacion*4, railRotation, railScaleY, railScaleY, railOfsetX, railOfsetY)
   
 end
 
@@ -250,13 +228,12 @@ trainRotation = 0
 end
 
 function trainMovement(dt)
-  speed = 400
+    speed = 400
   
   train1.y = train1.y + speed * dt  
   train2.y = train2.y + speed * dt  
   train3.y = train3.y + speed * dt  
   train4.y = train4.y + speed * dt  
-  
 end
 
 function OBtrain()
@@ -497,4 +474,63 @@ height = playerHeight
   resetTimerValue = 3
   gameplayTimer = resetTimerValue
   love.audio.setVolume( 0.5 )
+end
+  
+function gameplayUpdate(dt)
+   playerInput(dt)  
+   
+    if gameInPause == false 
+    then  
+    if not PlayMusic:isPlaying() 
+    then
+		love.audio.play( PlayMusic )
     end
+  
+    trainMovement(dt)
+    OBtrain()
+    RandTrain()
+    CheckColisions()
+    end
+
+  if playerLives == 0 then
+  gameInPause = true
+  end
+
+CheckTimer(dt)
+end
+  
+function gameplayDraw()
+  if startgame == false
+  then
+  drawRails()
+  drawTrain()
+  drawPlayer(playerPositionValue)
+  if  gameInPause == true
+  then
+    pauseWidht = 500
+    pauseHeight = 300
+    pauseX = (love.graphics.getWidth() / 2) - (pauseWidht / 2)
+    pauseY = (love.graphics.getHeight() / 2) - (pauseHeight / 2)
+
+love.graphics.setColor(0,0,0)
+love.graphics.rectangle("fill", pauseX, pauseY, pauseWidht, pauseHeight)
+love.graphics.setColor(1,1,1)
+if playerLives > 0
+then
+love.graphics.print("C = Continue",(love.graphics.getWidth() / 2) - 100, (love.graphics.getHeight() / 2) - (pauseHeight / 3),0 ,2 ,2)
+end
+love.graphics.print("R = Reset",(love.graphics.getWidth() / 2) - 100, (love.graphics.getHeight() / 2),0 ,2 ,2)
+love.graphics.print("E = Exit",(love.graphics.getWidth() / 2) - 100, (love.graphics.getHeight() / 2) + (pauseHeight / 3),0 ,2 ,2)
+
+  
+  end
+  HUB()
+else
+  love.graphics.setColor(0,0,0)
+  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+  love.graphics.setColor(1,1,1)
+  love.graphics.print("press S to start",(love.graphics.getWidth() / 2) - 150, (love.graphics.getHeight() / 2) -100,0 ,2 ,2)
+  love.graphics.print("press C to pause",(love.graphics.getWidth() / 2) - 150, (love.graphics.getHeight() / 2) -50,0 ,2 ,2)
+  love.graphics.print("press D and A to move",(love.graphics.getWidth() / 2) - 150, (love.graphics.getHeight() / 2),0 ,2 ,2)
+  end
+end
